@@ -6,7 +6,7 @@
   Plugin URI: http://sendpress.com
   Description: Extending SendPress plugin (which must be active and working) with features to use SES
   Author: Matt Durak
-  Depends: SendPress: Email Marketing and Newsletters
+  Depends: SendPress: Email Marketing and Newsletters, AWS SES Email
  */
 
 //require 'classes/views/class-sendpress-view-settings-account2.php';
