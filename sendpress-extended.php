@@ -135,9 +135,11 @@ function aws_ses_email_options()
         $autorized = aws_ses_email_getverified();
     }
     $senders = (array)get_option('aws_ses_email_senders');
+    $sender_domains = (array)get_option('aws_ses_email_sender_domains');
     // Update the authorized senders list
     $update_senders = false;
-    foreach ($autorized as $email) {
+    $update_sender_domains = false;
+    foreach ($autorized['Addresses'] as $email) {
         if (!array_key_exists($email, $senders)) {
             $senders[$email] = array(
                 -1,
@@ -154,6 +156,23 @@ function aws_ses_email_options()
     if ($update_senders) {
         update_option('aws_ses_email_senders', $senders);
     }
+    foreach ($autorized['Domains'] as $domain) {
+        if (!array_key_exists($domain, $sender_domains)) {
+            $sender_domains[$domain] = array(
+                -1,
+                true
+            );
+            $update_sender_domains = true;
+        } else {
+            if (!$sender_domains[$domain][1]) {
+                $sender_domains[$domain][1] = true;
+                $update_sender_domains = true;
+            }
+        }
+    }
+    if ($update_sender_domains) {
+        update_option('aws_ses_email_sender_domains', $sender_domains);
+    }
 
     $update_options = false;
     $sendpress_active = class_exists('SendPress_Option');
@@ -162,8 +181,10 @@ function aws_ses_email_options()
         $aws_ses_email_options['active'] = 0;
         update_option('aws_ses_email_options', $aws_ses_email_options);
     }
+    $from_domain = substr($aws_ses_email_options['from_email'], strpos($aws_ses_email_options['from_email'], '@') + 1);
     if (($aws_ses_email_options['from_email'] != '')
-        && (isset($senders[$aws_ses_email_options['from_email']]) && $senders[$aws_ses_email_options['from_email']][1] === TRUE)) {
+        && ((isset($senders[$aws_ses_email_options['from_email']]) && $senders[$aws_ses_email_options['from_email']][1] === TRUE)
+            || (isset($sender_domains[$from_domain]) && $sender_domains[$from_domain][1] === TRUE))) {
         if ($aws_ses_email_options['credentials_ok'] == 0) {
             $aws_ses_email_options['credentials_ok'] = 1;
             $update_options = true;
@@ -173,9 +194,11 @@ function aws_ses_email_options()
             $update_options = true;
         }
     }
-    if (isset($aws_ses_email_options['from_email']) &&
-            isset($senders[$aws_ses_email_options['from_email']]) &&
-            $senders[$aws_ses_email_options['from_email']][1] !== TRUE) {
+    if (isset($aws_ses_email_options['from_email'])
+        && ((isset($senders[$aws_ses_email_options['from_email']]) &&
+            $senders[$aws_ses_email_options['from_email']][1] !== TRUE)
+            || (isset($sender_domains[$from_domain]) &&
+                $sender_domains[$from_domain][1] !== TRUE))) {
         $aws_ses_email_options['sender_ok'] = 0;
         $update_options = true;
     }
@@ -253,12 +276,11 @@ function aws_ses_email_options()
 
 function aws_ses_email_getverified()
 {
-    global $aws_ses_email_options;
     global $SES;
     aws_ses_email_check_SES();
-    $result = $SES->listVerifiedEmailAddresses();
+    $result = $SES->listIdentities();
     if (is_array($result)) {
-        return $result['Addresses'];
+        return $result;
     } else {
         return array();
     }

@@ -97,16 +97,16 @@ class SimpleEmailService
 	* 
 	* @return An array containing two items: a list of verified email addresses, and the request id.
 	*/
-	public function listVerifiedEmailAddresses() {
+	public function listIdentities() {
 		$rest = new SimpleEmailServiceRequest($this, 'GET');
-		$rest->setParameter('Action', 'ListVerifiedEmailAddresses');
+		$rest->setParameter('Action', 'ListIdentities');
 
 		$rest = $rest->getResponse();
 		if($rest->error === false && $rest->code !== 200) {
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		}
 		if($rest->error !== false) {
-			$this->__triggerError('listVerifiedEmailAddresses', $rest->error);
+			$this->__triggerError('ListIdentities', $rest->error);
 			return false;
 		}
 
@@ -115,12 +115,19 @@ class SimpleEmailService
 			return $response;
 		}
 
-		$addresses = array();
-		foreach($rest->body->ListVerifiedEmailAddressesResult->VerifiedEmailAddresses->member as $address) {
-			$addresses[] = (string)$address;
+		$domains = array();
+        $addresses = array();
+		foreach($rest->body->ListIdentitiesResult->Identities->member as $identity) {
+            $str = (string)$identity;
+            if (strpos($str, '@') == false) {
+    			$domains[] = $str;
+            } else {
+                $addresses[] = $str;
+            }
 		}
 
-		$response['Addresses'] = $addresses;
+        $response['Addresses'] = $addresses;
+		$response['Domains'] = $domains;
 		$response['RequestId'] = (string)$rest->body->ResponseMetadata->RequestId;
 
 		return $response;

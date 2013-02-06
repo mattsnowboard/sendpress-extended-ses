@@ -26,10 +26,7 @@
         }
         ?></li>
         <?php
-        if (isset($aws_ses_email_options['from_email'])
-            && ($aws_ses_email_options['from_email'] != '')
-            && isset($senders[$aws_ses_email_options['from_email']])
-            && ($senders[$aws_ses_email_options['from_email']][1])) {
+        if ($aws_ses_email_options['sender_ok'] == 1) {
             echo('<li style="color:#0f0;">');
             _e("Sender Email has been confirmed.", 'aws_ses_email');
         } else {
@@ -116,6 +113,30 @@
         <?php
         $i = 0;
         foreach ($senders as $email => $props) {
+            if ($i % 2 == 0) {
+                $color = ' style="background-color:#ddd"';
+            } else {
+                $color = '';
+            }
+            echo("<tr$color>");
+            echo("<td>$email</td>");
+            echo("<td>");
+            echo("</td>");
+            echo("<td>" . (($props[1]) ? __('Yes', 'aws_ses_email') : __('No', 'aws_ses_email')) . "</td>");
+            echo("</tr>");
+            $i++;
+        }
+        ?>
+        </table>
+        <table class="form-table">
+            <tr style="background-color:#ccc; font-weight:bold;">
+                <td><?php _e('Domain', 'aws_ses_email') ?></td>
+                <td><?php _e('Request Id', 'aws_ses_email') ?></td>
+                <td><?php _e('Confirmed', 'aws_ses_email') ?></td>
+            </tr>
+        <?php
+        $i = 0;
+        foreach ($sender_domains as $email => $props) {
             if ($i % 2 == 0) {
                 $color = ' style="background-color:#ddd"';
             } else {
