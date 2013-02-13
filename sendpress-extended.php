@@ -139,41 +139,44 @@ function aws_ses_email_options()
     // Update the authorized senders list
     $update_senders = false;
     $update_sender_domains = false;
-    foreach ($autorized['Addresses'] as $email) {
-        if (!array_key_exists($email, $senders)) {
-            $senders[$email] = array(
-                -1,
-                true
-            );
-            $update_senders = true;
-        } else {
-            if (!$senders[$email][1]) {
-                $senders[$email][1] = true;
+    if (isset($authorized['Addresses']) {
+        foreach ($autorized['Addresses'] as $email) {
+            if (!array_key_exists($email, $senders)) {
+                $senders[$email] = array(
+                    -1,
+                    true
+                );
                 $update_senders = true;
+            } else {
+                if (!$senders[$email][1]) {
+                    $senders[$email][1] = true;
+                    $update_senders = true;
+                }
             }
         }
+        if ($update_senders) {
+            update_option('aws_ses_email_senders', $senders);
+        }
     }
-    if ($update_senders) {
-        update_option('aws_ses_email_senders', $senders);
-    }
-    foreach ($autorized['Domains'] as $domain) {
-        if (!array_key_exists($domain, $sender_domains)) {
-            $sender_domains[$domain] = array(
-                -1,
-                true
-            );
-            $update_sender_domains = true;
-        } else {
-            if (!$sender_domains[$domain][1]) {
-                $sender_domains[$domain][1] = true;
+    if (isset($authorized['Domains']) {
+        foreach ($autorized['Domains'] as $domain) {
+            if (!array_key_exists($domain, $sender_domains)) {
+                $sender_domains[$domain] = array(
+                    -1,
+                    true
+                );
                 $update_sender_domains = true;
+            } else {
+                if (!$sender_domains[$domain][1]) {
+                    $sender_domains[$domain][1] = true;
+                    $update_sender_domains = true;
+                }
             }
         }
+        if ($update_sender_domains) {
+            update_option('aws_ses_email_sender_domains', $sender_domains);
+        }
     }
-    if ($update_sender_domains) {
-        update_option('aws_ses_email_sender_domains', $sender_domains);
-    }
-
     $update_options = false;
     $sendpress_active = class_exists('SendPress_Option');
 
