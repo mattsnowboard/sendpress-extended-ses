@@ -139,7 +139,7 @@ function aws_ses_email_options()
     // Update the authorized senders list
     $update_senders = false;
     $update_sender_domains = false;
-    if (isset($authorized['Addresses']) {
+    if (isset($authorized['Addresses'])) {
         foreach ($autorized['Addresses'] as $email) {
             if (!array_key_exists($email, $senders)) {
                 $senders[$email] = array(
@@ -158,7 +158,7 @@ function aws_ses_email_options()
             update_option('aws_ses_email_senders', $senders);
         }
     }
-    if (isset($authorized['Domains']) {
+    if (isset($authorized['Domains'])) {
         foreach ($autorized['Domains'] as $domain) {
             if (!array_key_exists($domain, $sender_domains)) {
                 $sender_domains[$domain] = array(
