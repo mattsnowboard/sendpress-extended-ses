@@ -2,8 +2,8 @@
 
 /*
   Plugin Name: SendPress Extended: Email Marketing and Newsletters
-  Version: 0.8.8.1
-  Plugin URI: http://sendpress.com
+  Version: 0.9
+  Plugin URI: 
   Description: Extending SendPress plugin (which must be active and working) with features to use SES
   Author: Matt Durak
   Depends: SendPress: Email Marketing and Newsletters
@@ -208,18 +208,18 @@ function aws_ses_email_options()
             $aws_ses_email_options['active'] = 1;
             $update_options = true;
             echo '<div id="message" class="updated fade">
-							<p>' . __('Plugin is activated and functionnal',
+                            <p>' . __('Plugin is activated and functionnal',
                                                                            'aws_ses_email') . '</p>
-							</div>' . "\n";
+                            </div>' . "\n";
         }
     }
     if (!empty($_POST['deactivate'])) {
         $aws_ses_email_options['active'] = 0;
         $update_options = true;
         echo '<div id="message" class="updated fade">
-							<p>' . __('Plugin de-activated',
+                            <p>' . __('Plugin de-activated',
                                                                        'aws_ses_email') . '</p>
-							</div>' . "\n";
+                            </div>' . "\n";
     }
     if (!empty($_POST['save'])) {
         if ($aws_ses_email_options['from_email'] != trim($_POST['from_email'])) {
@@ -354,30 +354,30 @@ function aws_ses_email_check_SES()
 
 // TODO: use my AWSMailer class
 function aws_ses_mail($to, $subject, $message, $headers = '') {
-	global $SES;
-	global $aws_ses_email_options;
-	aws_ses_email_check_SES();
-	$html = $message;
-	$txt = strip_tags($html);
-	if (strlen($html) == strlen($txt)) {
-		$html = '';
-	}
-	$m = new SimpleEmailServiceMessage();
-	$m->addTo($to);
-	$m->setFrom('"' . $aws_ses_email_options['from_name'] . '" <' . $aws_ses_email_options['from_email'] . ">");
-	$m->setReturnPath($aws_ses_email_options['return_path']);
-	$m->setSubject($subject);
-	if ($html == '') {
-		$m->setMessageFromString($message);
-	} else {
-		$m->setMessageFromString($txt, $html);
-	}
-	$res = $SES->sendEmail($m);
-	if (is_array($res)) {
-		return $res['MessageId'];
-	} else {
-		return NULL;
-	}
+    global $SES;
+    global $aws_ses_email_options;
+    aws_ses_email_check_SES();
+    $html = $message;
+    $txt = strip_tags($html);
+    if (strlen($html) == strlen($txt)) {
+        $html = '';
+    }
+    $m = new SimpleEmailServiceMessage();
+    $m->addTo($to);
+    $m->setFrom('"' . $aws_ses_email_options['from_name'] . '" <' . $aws_ses_email_options['from_email'] . ">");
+    $m->setReturnPath($aws_ses_email_options['return_path']);
+    $m->setSubject($subject);
+    if ($html == '') {
+        $m->setMessageFromString($message);
+    } else {
+        $m->setMessageFromString($txt, $html);
+    }
+    $res = $SES->sendEmail($m);
+    if (is_array($res)) {
+        return $res['MessageId'];
+    } else {
+        return NULL;
+    }
 }
 
 if (!isset($aws_ses_email_options)) {
