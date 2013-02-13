@@ -130,9 +130,9 @@ function aws_ses_email_options()
 {
     global $wpdb, $aws_ses_email_options;
     
-    $$authorized = array();
+    $authorized = array();
     if (($aws_ses_email_options['access_key'] != '') && ($aws_ses_email_options['secret_key'] != '')) {
-        $$authorized = aws_ses_email_getverified();
+        $authorized = aws_ses_email_getverified();
     }
     $senders = (array)get_option('aws_ses_email_senders');
     $sender_domains = (array)get_option('aws_ses_email_sender_domains');
@@ -140,7 +140,7 @@ function aws_ses_email_options()
     $update_senders = false;
     $update_sender_domains = false;
     if (isset($authorized['Addresses'])) {
-        foreach ($$authorized['Addresses'] as $email) {
+        foreach ($authorized['Addresses'] as $email) {
             if (!array_key_exists($email, $senders)) {
                 $senders[$email] = array(
                     -1,
@@ -159,7 +159,7 @@ function aws_ses_email_options()
         }
     }
     if (isset($authorized['Domains'])) {
-        foreach ($$authorized['Domains'] as $domain) {
+        foreach ($authorized['Domains'] as $domain) {
             if (!array_key_exists($domain, $sender_domains)) {
                 $sender_domains[$domain] = array(
                     -1,
