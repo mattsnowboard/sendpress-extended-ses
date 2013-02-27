@@ -6,18 +6,22 @@ if (!defined('SENDPRESS_VERSION')) {
     die;
 }
 
-if(!class_exists('SendPress_Sender_Ses')){  
+if (!class_exists('SendPress_Sender_Ses')) {
 
-class SendPress_Sender_Ses extends SendPress_Sender {
-    function label(){
+class SendPress_Sender_Ses extends SendPress_Sender
+{
+    public function label()
+    {
         return __('SES','sendpress');
     }
 
-    function save(){
+    public function save()
+    {
         
     }
 
-    function settings(){ ?>
+    public function settings()
+    {?>
         <p><?php _e( 'AWS SES', 'sendpress' ); ?>.</p>
         <p><?php _e('This is a customized option that uses Amazon SES to send email. It allows you to send much more mail but must have required plugins setup and working. <strong>Use this option</strong>','sendpress'); ?>.</p>
         <?php
@@ -29,7 +33,8 @@ class SendPress_Sender_Ses extends SendPress_Sender {
     }
 
 
-    function send_email($to, $subject, $html, $text, $istest = false ){
+    public function send_email($to, $subject, $html, $text, $istest = false)
+    {
         global $phpmailer, $wpdb;
         
         // Make sure we have the right $phpmailer
@@ -49,18 +54,18 @@ class SendPress_Sender_Ses extends SendPress_Sender {
         $phpmailer->ClearCustomHeaders();
         $phpmailer->ClearReplyTos();
         //return $email;
-        $phpmailer->MsgHTML( $html );
-        $phpmailer->AddAddress( trim( $to ) );
+        $phpmailer->MsgHTML($html);
+        $phpmailer->AddAddress(trim($to));
         $phpmailer->AltBody= $text;
         $phpmailer->Subject = $subject;
         $content_type = 'text/html';
         $phpmailer->ContentType = $content_type;
         // Set whether it's plaintext, depending on $content_type
         //if ( 'text/html' == $content_type )
-        $phpmailer->IsHTML( true );
+        $phpmailer->IsHTML(true);
         
         // If we don't have a charset from the input headers
-        if ( !isset( $charset ) ) {
+        if (!isset($charset)) {
             //$charset = get_bloginfo( 'charset' );
             // Set the content-type and charset
             $phpmailer->CharSet = 'UTF-8';
@@ -70,7 +75,7 @@ class SendPress_Sender_Ses extends SendPress_Sender {
         * We'll let php init mess with the message body and headers.  But then
         * we stomp all over it.  Sorry, my plug-inis more important than yours :)
         */
-        do_action_ref_array( 'phpmailer_init', array( &$phpmailer ) );
+        do_action_ref_array('phpmailer_init', array(&$phpmailer));
         
         $from_email = SendPress_Option::get('fromemail');
         $phpmailer->From = $from_email;
@@ -78,17 +83,15 @@ class SendPress_Sender_Ses extends SendPress_Sender {
         $phpmailer->Sender = SendPress_Option::get('fromemail');
         $sending_method  = SendPress_Option::get('sendmethod');
         
-
         $phpmailer->IsSES();
         // Set the other options
         
         // Set SMTPDebug to 2 will collect dialogue between us and the mail server
-        if($istest == true){
+        if ($istest == true) {
             $phpmailer->SMTPDebug = 2;
             // Start output buffering to grab smtp output
             ob_start(); 
         }
-
 
         // Send!
         $result = true; // start with true, meaning no error
@@ -103,7 +106,7 @@ class SendPress_Sender_Ses extends SendPress_Sender {
         
         }
 
-        if (  $result != true && $istest == true  ) {
+        if ($result != true && $istest == true) {
             $hostmsg = 'host: '.($phpmailer->Host).'  port: '.($phpmailer->Port).'  secure: '.($phpmailer->SMTPSecure) .'  auth: '.($phpmailer->SMTPAuth).'  user: '.($phpmailer->Username)."  pass: *******\n";
             $msg = '';
             $msg .= __('The result was: ','sendpress').$result."\n";
@@ -112,11 +115,8 @@ class SendPress_Sender_Ses extends SendPress_Sender {
             $msg .= __("The SMTP debugging output is shown below:\n","sendpress");
             $msg .= $smtp_debug."\n";
         }
-
-    
         
         return $result;
-
     }
 
 
