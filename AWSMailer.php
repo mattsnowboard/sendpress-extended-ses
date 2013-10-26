@@ -52,7 +52,7 @@ class AWSMailer extends PHPMailer
      * @return boolean
      * @throws phpmailerException
      */
-    protected function PostSend()
+    public function PostSend()
     {
         try {
             if ($this->Mailer == 'ses') {
