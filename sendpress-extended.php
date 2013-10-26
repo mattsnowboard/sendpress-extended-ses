@@ -212,7 +212,7 @@ function aws_ses_email_options()
             $update_options = true;
             echo '<div id="message" class="updated fade">
                             <p>' . __('Plugin is activated and functionnal',
-                                                                           'aws_ses_email') . '</p>
+                                      'aws_ses_email') . '</p>
                             </div>' . "\n";
         }
     }
@@ -221,7 +221,7 @@ function aws_ses_email_options()
         $update_options = true;
         echo '<div id="message" class="updated fade">
                             <p>' . __('Plugin de-activated',
-                                                                       'aws_ses_email') . '</p>
+                                      'aws_ses_email') . '</p>
                             </div>' . "\n";
     }
     if (!empty($_POST['save'])) {
@@ -329,7 +329,7 @@ function aws_ses_email_test_email()
     $AWSSESMSG = '';
     $rid = aws_ses_mail($aws_ses_email_options['from_email'],
                       __('AWS SES - Test Message', 'aws_ses_email'),
-                         __("This is AWS SES Test message. It has been sent via Amazon SES Service.\nAll looks fine !\n\n", 'aws_ses_email'));
+                      __("This is AWS SES Test message. It has been sent via Amazon SES Service.\nAll looks fine !\n\n", 'aws_ses_email'));
     $AWSSESMSG .= ' id ' . var_export($rid, true);
     aws_ses_email_message_testdone();
 }
