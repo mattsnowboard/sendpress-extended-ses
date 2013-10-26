@@ -33,7 +33,7 @@ class SendPress_Sender_Ses extends SendPress_Sender
     }
 
 
-    public function send_email($to, $subject, $html, $text, $istest = false)
+    public function send_email($to, $subject, $html, $text, $istest = false, $sid, $list_id, $report_id)
     {
         global $phpmailer, $wpdb;
         
