@@ -6,7 +6,7 @@ The name is very generic because this was just used for a client project, but si
 
 # Use
 
- 1. Install SendPress (http://sendpress.com/) (tested under 0.9.1)
+ 1. Install SendPress (http://sendpress.com/) (tested under 0.9.5.4)
  2. Install this plugin
  3. Fill in the necessary parts in the AWS SES Email settings under "Settings"
  4. Choose "Activate SES" in the SendPress Settings "Sending Account" page
