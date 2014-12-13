@@ -4,10 +4,10 @@
     <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
         <?php wp_nonce_field('aws_ses_email'); ?>
         <h3><?php _e('Plugin State','aws_ses_email') ?>&nbsp;<input type="submit" name="refresh" value="<?php _e('Refresh','aws_ses_email') ?>" /></h3>
-    </form>  
+    </form>
     <ul>
         <?php
-        if ($aws_ses_email_options['from_email'] != '') {
+        if (isset($aws_ses_email_options['from_email']) && $aws_ses_email_options['from_email'] != '') {
             echo('<li style="color:#0f0;">');
             _e("Sender Email is set ", 'aws_ses_email');
         } else {
@@ -16,7 +16,7 @@
         }
         ?></li>
         <?php
-        if ($aws_ses_email_options['credentials_ok'] == 1) {
+        if (isset($aws_ses_email_options['credentials_ok']) && $aws_ses_email_options['credentials_ok'] == 1) {
             echo('<li style="color:#0f0;">');
             _e("Amazon API Keys are valid", 'aws_ses_email');
         } else {
@@ -26,7 +26,7 @@
         }
         ?></li>
         <?php
-        if ($aws_ses_email_options['sender_ok'] == 1) {
+        if (isset($aws_ses_email_options['sender_ok']) && $aws_ses_email_options['sender_ok'] == 1) {
             echo('<li style="color:#0f0;">');
             _e("Sender Email has been confirmed.", 'aws_ses_email');
         } else {
@@ -36,7 +36,7 @@
         ?></li>  	
 
         <?php
-        if ($aws_ses_email_options['active'] == 1):
+        if (isset($aws_ses_email_options['active']) && $aws_ses_email_options['active'] == 1):
             echo('<li style="color:#0f0;">');
             _e("Plugin is active.", 'aws_ses_email');
             echo("<br /><b>");
@@ -71,11 +71,11 @@
         <?php wp_nonce_field('aws_ses_email'); ?>
         <table class="form-table">
             <tr><th scope="row"><?php _e('Sender Email', 'aws_ses_email') ?></th>
-                <td><input type="text" name="from_email" value="<?php echo $aws_ses_email_options['from_email']; ?>" />&nbsp;<?php _e('(Has to be a valid Email)', 'aws_ses_email') ?></td></tr>
+                <td><input type="text" name="from_email" value="<?php echo (isset($aws_ses_email_options['from_email'])) ? $aws_ses_email_options['from_email'] : ''; ?>" />&nbsp;<?php _e('(Has to be a valid Email)', 'aws_ses_email') ?></td></tr>
             <tr><th scope="row"><?php _e('Name', 'aws_ses_email') ?></th>
-                <td><input type="text" name="from_name" value="<?php echo $aws_ses_email_options['from_name']; ?>" /></td></tr>
+                <td><input type="text" name="from_name" value="<?php echo (isset($aws_ses_email_options['from_name'])) ? $aws_ses_email_options['from_name'] : ''; ?>" /></td></tr>
             <tr><th scope="row"><?php _e('Return Path', 'aws_ses_email') ?></th>
-                <td><input type="text" name="return_path" value="<?php echo $aws_ses_email_options['return_path']; ?>" />&nbsp;<?php _e('You can specify a return Email (not required).<br />Delivery Status notification messages will be sent to this address.', 'aws_ses_email') ?></td></tr>
+                <td><input type="text" name="return_path" value="<?php echo (isset($aws_ses_email_options['return_path'])) ? $aws_ses_email_options['return_path'] : ''; ?>" />&nbsp;<?php _e('You can specify a return Email (not required).<br />Delivery Status notification messages will be sent to this address.', 'aws_ses_email') ?></td></tr>
         </table>
 
         <h3><?php _e("Amazon API Keys", 'aws_ses_email') ?></h3>
@@ -86,9 +86,9 @@
     <?php _e('Please insert here your API keys given by the Amazon Web Services.', 'aws_ses_email') ?>
         <table class="form-table" style="width:450px; float:left;" width="450">
             <tr><th scope="row"><?php _e('access_key', 'aws_ses_email') ?></th>
-                <td><input type="text" name="access_key" value="<?php echo $aws_ses_email_options['access_key']; ?>" /></td></tr>
+                <td><input type="text" name="access_key" value="<?php echo (isset($aws_ses_email_options['access_key'])) ? $aws_ses_email_options['access_key'] : ''; ?>" /></td></tr>
             <tr><th scope="row"><?php _e('secret_key', 'aws_ses_email') ?></th>
-                <td><input type="text" name="secret_key" value="<?php echo $aws_ses_email_options['secret_key']; ?>" /></td></tr>
+                <td><input type="text" name="secret_key" value="<?php echo (isset($aws_ses_email_options['secret_key'])) ? $aws_ses_email_options['secret_key'] : ''; ?>" /></td></tr>
         </table>
 
         <input type="hidden" name="action" value="update" />
@@ -156,7 +156,7 @@
     <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 <?php wp_nonce_field('aws_ses_email'); ?>
         <br />
-<?php _e('Add the following email: ', 'aws_ses_email') ?><?php echo $aws_ses_email_options['from_email']; ?><?php _e(' to senders.', 'aws_ses_email') ?>
+<?php _e('Add the following email: ', 'aws_ses_email') ?><?php echo (isset($aws_ses_email_options['from_email'])) ? $aws_ses_email_options['from_email'] : ''; ?><?php _e(' to senders.', 'aws_ses_email') ?>
 
         <p class="submit">
             <input type="submit" name="addemail" value="<?php _e('Add this Email', 'aws_ses_email') ?>" />
