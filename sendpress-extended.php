@@ -82,8 +82,7 @@ function sendpress_extended_init()
 
 spl_autoload_register(array('SendPressExtended', 'autoload'));
 
-add_action('sendpress_loaded', 'sendpress_extended_init');
-
+add_action('sendpress_init', 'sendpress_extended_init');
 
 // AWS SES STUFF
 if (is_admin()) {
@@ -131,7 +130,10 @@ function aws_ses_email_options()
     global $wpdb, $aws_ses_email_options;
     
     $authorized = array();
-    if (($aws_ses_email_options['access_key'] != '') && ($aws_ses_email_options['secret_key'] != '')) {
+    if (isset($aws_ses_email_options['access_key']) &&
+        $aws_ses_email_options['access_key'] != '' &&
+        isset($aws_ses_email_options['secret_key']) &&
+        $aws_ses_email_options['secret_key'] != '') {
         $authorized = aws_ses_email_getverified();
     }
     $senders = (array)get_option('aws_ses_email_senders');
@@ -180,13 +182,20 @@ function aws_ses_email_options()
     $update_options = false;
     $sendpress_active = class_exists('SendPress_Option');
 
-    if (($aws_ses_email_options['sender_ok'] != 1) || ($aws_ses_email_options['credentials_ok'] != 1)) {
+    if (!isset($aws_ses_email_options['sender_ok'])
+        || ($aws_ses_email_options['sender_ok'] != 1)
+        || (!isset($aws_ses_email_options['credentials_ok'])
+        || $aws_ses_email_options['credentials_ok'] != 1)) {
         $aws_ses_email_options['active'] = 0;
         update_option('aws_ses_email_options', $aws_ses_email_options);
     }
-    $from_domain = substr($aws_ses_email_options['from_email'], strpos($aws_ses_email_options['from_email'], '@') + 1);
-    if (($aws_ses_email_options['from_email'] != '')
-        && ((isset($senders[$aws_ses_email_options['from_email']]) && $senders[$aws_ses_email_options['from_email']][1] === TRUE)
+    $from_domain = (isset($aws_ses_emails_options['from_email']))
+        ? substr($aws_ses_email_options['from_email'], strpos($aws_ses_email_options['from_email'], '@') + 1)
+        : '';
+    if (isset($aws_ses_email_options['from_email'])
+        && ($aws_ses_email_options['from_email'] != '')
+        && ((isset($senders[$aws_ses_email_options['from_email']])
+             && $senders[$aws_ses_email_options['from_email']][1] === TRUE)
             || (isset($sender_domains[$from_domain]) && $sender_domains[$from_domain][1] === TRUE))) {
         if ($aws_ses_email_options['credentials_ok'] == 0) {
             $aws_ses_email_options['credentials_ok'] = 1;
@@ -225,7 +234,8 @@ function aws_ses_email_options()
                             </div>' . "\n";
     }
     if (!empty($_POST['save'])) {
-        if ($aws_ses_email_options['from_email'] != trim($_POST['from_email'])) {
+        if (!isset($aws_ses_email_options['from_email'])
+            || $aws_ses_email_options['from_email'] != trim($_POST['from_email'])) {
             $aws_ses_email_options['sender_ok'] = 0;
             $aws_ses_email_options['active'] = 0;
         }
@@ -241,7 +251,10 @@ function aws_ses_email_options()
             SendPress_Option::set('fromname', $_POST['from_name']);
         }
 
-        if (($aws_ses_email_options['access_key'] != trim($_POST['access_key'])) || ($aws_ses_email_options['secret_key'] != trim($_POST['secret_key']))) {
+        if (!isset($aws_ses_email_options['access_key'])
+            || ($aws_ses_email_options['access_key'] != trim($_POST['access_key']))
+            || (!isset($aws_ses_email_options['secret_key'])
+                || $aws_ses_email_options['secret_key'] != trim($_POST['secret_key']))) {
             $aws_ses_email_options['credentials_ok'] = 0;
             $aws_ses_email_options['sender_ok'] = 0;
             $aws_ses_email_options['active'] = 0;
